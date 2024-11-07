@@ -1,5 +1,6 @@
 import { Modal, Button, Form, Input, Select, Space } from "antd";
 import { useEffect } from "react";
+import { RowModel } from "../models/Row.model";
 
 const { Option } = Select;
 
@@ -14,26 +15,24 @@ const tailLayout = {
 
 export const FlexModal: React.FC<{
   isModalOpen: boolean;
-  handleOk: (values: any) => void;
+  data?: RowModel;
+  handleOk: (values: RowModel) => void;
   handleCancel: () => void;
-  data?: {
-    id: number;
-    name: string;
-    surname: string;
-    state: boolean;
-    description: string;
-  };
-}> = ({ isModalOpen, handleOk, handleCancel, data }) => {
+  handleUpdate: (values: RowModel) => void;
+}> = ({ isModalOpen, data, handleOk, handleCancel, handleUpdate }) => {
   const [form] = Form.useForm();
 
-  const onFinish = (values: any) => {
+  const onFinish = (values: RowModel) => {
     const formedData = { ...values, id: Math.round(Math.random() * 100) };
     if (data) {
-      console.log("UPDATED");
+      console.log(formedData, "UPDATED FORMED DATA");
+      handleUpdate({ ...formedData, id: data.id });
+      form.resetFields();
+    } else {
+      console.log(formedData, "NEW FORMED DATA");
+      handleOk(formedData);
+      form.resetFields();
     }
-    console.log(formedData, "FORMED DATA");
-    handleOk(formedData);
-    form.resetFields();
   };
 
   useEffect(() => {

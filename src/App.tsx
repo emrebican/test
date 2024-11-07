@@ -6,11 +6,13 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { Button } from "antd";
 import { FlexModal } from "./components/FlexModal";
+import { RowModel } from "./models/Row.model";
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [data, setData] = useState<any>(null);
-  const [rowData, setRowData] = useState([
+  const [updatedData, setUpdatedData] = useState<any>(null);
+  // ROW DATA
+  const [rowData, setRowData] = useState<RowModel[]>([
     {
       id: 1,
       name: "Emre",
@@ -20,39 +22,7 @@ function App() {
     },
   ]);
 
-  /*  */
-  const ActionRow = (params: any) => {
-    const deleteRow = () => {
-      console.log(params.node.data, "PARAMS");
-      console.log(rowData, "rowData");
-
-      // params.api.applyTransaction({ remove: [params.node.data] });
-
-      const filteredData = rowData.filter(
-        (row) => row.id !== params.node.data.id
-      );
-      setRowData(filteredData);
-    };
-
-    const updateRow = () => {
-      setData(params.node.data);
-      setIsModalOpen(true);
-      console.log(params.node.data, "PARAMS");
-    };
-
-    return (
-      <>
-        <Button type="primary" onClick={updateRow}>
-          Update
-        </Button>
-        <Button type="primary" danger onClick={deleteRow}>
-          Delete
-        </Button>
-      </>
-    );
-  };
-  /*  */
-
+  // COLUMN DEFINITIONS
   const [columns] = useState<any>([
     { field: "name", editable: false },
     { field: "surname", editable: false },
@@ -67,23 +37,26 @@ function App() {
     {
       field: "actions",
       editable: false,
-      cellRenderer: ({ data }) => {
-        const test = () => {
-          console.log(data, "DATA test");
-          console.log(rowData, "ROWDATA test");
+      cellRenderer: ({ data }: any) => {
+        const deleteRow = () => {
+          setRowData((prev) => prev.filter((row) => row.id !== data.id));
+        };
 
-          const filteredData = rowData.filter(
-            (row) => row.id !== data.id
-          );
-          console.log(filteredData, "filteredData");
-          
-          setRowData(filteredData);
+        const updateRow = () => {
+          console.log(data, "CELL DATA");
+
+          setUpdatedData(data);
+          setIsModalOpen(true);
         };
 
         return (
           <div>
-            <button>update</button>
-            <button onClick={test}>delete</button>
+            <Button type="primary" onClick={updateRow}>
+              update
+            </Button>
+            <Button type="primary" danger onClick={deleteRow}>
+              delete
+            </Button>
           </div>
         );
       },
@@ -100,6 +73,10 @@ function App() {
 
   const rowStyle = { textAlign: "left" };
 
+  useEffect(() => {
+    console.log(rowData, "ROW DATA last");
+  }, [rowData]);
+
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -113,9 +90,13 @@ function App() {
     setIsModalOpen(false);
   };
 
-  useEffect(() => {
-    console.log(rowData, "ROW DATA last");
-  }, [rowData]);
+  const handleUpdate = (values: any) => {
+    setUpdatedData(null);
+    setRowData((prev) =>
+      prev.map((row) => (row.id === values.id ? values : row))
+    );
+    setIsModalOpen(false);
+  };
 
   return (
     <>
@@ -136,7 +117,8 @@ function App() {
         isModalOpen={isModalOpen}
         handleOk={handleOk}
         handleCancel={handleCancel}
-        data={data}
+        data={updatedData}
+        handleUpdate={handleUpdate}
       />
     </>
   );
