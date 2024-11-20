@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import App from "./App";
 
@@ -20,6 +20,7 @@ describe("App.tsx test", () => {
     expect(title).toBeInTheDocument();
     expect(addNewButton).toBeInTheDocument();
     expect(agGrid).toBeInTheDocument();
+
   });
 
   // Add New Button opens the dialog
@@ -80,24 +81,26 @@ describe("App.tsx test", () => {
     // Check the dialog is closed
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
 
+    screen.debug(undefined, Infinity);
+
     // Check the new row
     await waitFor(() => {
       expect(screen.getByText("Test name")).toBeInTheDocument();
       expect(screen.getByText("Test surname")).toBeInTheDocument();
       // expect(screen.getByText("Active")).toBeInTheDocument();
-      // expect(screen.getByText("Test description")).toBeInTheDocument();
+      expect(screen.getByText("Test description")).toBeInTheDocument();
     });
   });
 
-  /*   it("Delete button removes the row", async () => {
+  /* it("Delete button removes the row", async () => {
     render(<App />);
 
     // Wait for the delete button to be in the document
-    await waitFor(() => {
-      // const deleteButton = screen.getByTestId("delete-button-1");
-      const deleteButton = screen.getByRole("button", { name: /delete/i });
-      expect(deleteButton).toBeInTheDocument();
-    });
+    //   await waitFor(() => {
+    //   // const deleteButton = screen.getByTestId("delete-button-1");
+    //   const deleteButton = screen.getByRole("button", { name: /delete/i });
+    //   expect(deleteButton).toBeInTheDocument();
+    // });
 
     // Click the delete button
     const deleteButton = screen.getByTestId("delete-button-1");
