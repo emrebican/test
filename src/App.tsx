@@ -42,6 +42,7 @@ function App() {
           setRowData((prev) => prev.filter((row) => row.id !== data.id));
         };
 
+        console.log(data, "CELL DATA");
         const updateRow = () => {
           console.log(data, "CELL DATA");
 
@@ -51,10 +52,19 @@ function App() {
 
         return (
           <div>
-            <Button type="primary" onClick={updateRow}>
+            <Button
+              id={`update-button-${data.id.toString()}`}
+              type="primary"
+              onClick={updateRow}
+            >
               update
             </Button>
-            <Button type="primary" danger onClick={deleteRow}>
+            <Button
+              id={`delete-button-${data.id.toString()}`}
+              type="primary"
+              danger
+              onClick={deleteRow}
+            >
               delete
             </Button>
           </div>
@@ -81,7 +91,7 @@ function App() {
     setIsModalOpen(true);
   };
 
-  const handleOk = (values: any) => {
+  const handleSubmit = (values: any) => {
     setRowData((prevRowData) => [...prevRowData, values]);
     setIsModalOpen(false);
   };
@@ -99,8 +109,9 @@ function App() {
   };
 
   return (
-    <>
-      <Button type="primary" onClick={showModal}>
+    <div>
+      <h1>AG Grid</h1>
+      <Button type="primary" id="modal-btn" onClick={showModal}>
         Add New
       </Button>
       <div className="ag-theme-quartz" style={{ width: "100%", height: 500 }}>
@@ -115,12 +126,12 @@ function App() {
 
       <FlexModal
         isModalOpen={isModalOpen}
-        handleOk={handleOk}
+        handleSubmit={handleSubmit}
         handleCancel={handleCancel}
         data={updatedData}
         handleUpdate={handleUpdate}
       />
-    </>
+    </div>
   );
 }
 

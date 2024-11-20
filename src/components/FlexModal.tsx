@@ -16,13 +16,13 @@ const tailLayout = {
 export const FlexModal: React.FC<{
   isModalOpen: boolean;
   data?: RowModel;
-  handleOk: (values: RowModel) => void;
+  handleSubmit: (values: RowModel) => void;
   handleCancel: () => void;
   handleUpdate: (values: RowModel) => void;
-}> = ({ isModalOpen, data, handleOk, handleCancel, handleUpdate }) => {
+}> = ({ isModalOpen, data, handleSubmit, handleCancel, handleUpdate }) => {
   const [form] = Form.useForm();
 
-  const onFinish = (values: RowModel) => {
+  const onSubmit = (values: RowModel) => {
     const formedData = { ...values, id: Math.round(Math.random() * 100) };
     if (data) {
       console.log(formedData, "UPDATED FORMED DATA");
@@ -30,7 +30,7 @@ export const FlexModal: React.FC<{
       form.resetFields();
     } else {
       console.log(formedData, "NEW FORMED DATA");
-      handleOk(formedData);
+      handleSubmit(formedData);
       form.resetFields();
     }
   };
@@ -63,20 +63,22 @@ export const FlexModal: React.FC<{
           {...layout}
           form={form}
           name="control-hooks"
-          onFinish={onFinish}
+          onFinish={onSubmit}
           style={{ maxWidth: 600 }}
         >
           <Form.Item name="name" label="Name" rules={[{ required: true }]}>
-            <Input />
+            <Input type="text" />
           </Form.Item>
+
           <Form.Item
             name="surname"
             label="Surname"
             rules={[{ required: true }]}
           >
-            <Input />
+            <Input type="text" />
           </Form.Item>
-          <Form.Item name="state" label="State" rules={[{ required: true }]}>
+
+          <Form.Item name="state" label="State" rules={[{ required: false }]}>
             <Select
               placeholder="Select a option"
               /* onChange={onGenderChange} */
@@ -92,7 +94,7 @@ export const FlexModal: React.FC<{
             label="Description"
             rules={[{ required: true }]}
           >
-            <Input />
+            <Input type="text" />
           </Form.Item>
           <Form.Item {...tailLayout}>
             <Space>
